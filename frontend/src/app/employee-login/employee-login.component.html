@@ -1,0 +1,51 @@
+<main class="page">
+  <section class="card">
+    <div class="header-row">
+      <div>
+        <h1>Employee Login</h1>
+        <p class="subtitle">Sign in with approved employee account</p>
+      </div>
+      <a routerLink="/">Go to Register</a>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="submit()">
+      <label>
+        Email
+        <input type="email" formControlName="email" />
+      </label>
+
+      <label>
+        Password
+        <div class="password-field">
+          <input [type]="showPassword ? 'text' : 'password'" formControlName="password" />
+          <button type="button" class="toggle-btn" (click)="togglePasswordVisibility()">
+            {{ showPassword ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+      </label>
+
+      <button type="submit" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Signing in...' : 'Login' }}
+      </button>
+    </form>
+
+    @if (successMessage) {
+      <p class="success">{{ successMessage }}</p>
+    }
+
+    @if (loggedInEmployee) {
+      <div class="profile">
+        <h3>Welcome, {{ loggedInEmployee.firstName }} {{ loggedInEmployee.lastName }}</h3>
+        <p>Email: {{ loggedInEmployee.email }}</p>
+        <p>สาขา: {{ loggedInEmployee.branch }}</p>
+        <p>Position: {{ loggedInEmployee.position }}</p>
+        <p>Status: {{ loggedInEmployee.status }}</p>
+        <button type="button" class="logout-btn" (click)="logout()">Logout</button>
+      </div>
+    }
+
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
+  </section>
+</main>

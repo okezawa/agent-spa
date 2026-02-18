@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc -p tsconfig.json",
-    "serve": "node serve.js",
+    "serve": "node server.js",
     "start": "node dist/index.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
@@ -17,10 +17,12 @@
   "description": "Node.js + Prisma backend",
   "dependencies": {
     "@prisma/client": "6.19.2",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
-    "helmet": "^8.1.0"
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.3"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

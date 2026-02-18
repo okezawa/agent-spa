@@ -1,0 +1,48 @@
+<main class="page">
+  <section class="card">
+    <div class="header-row">
+      <div>
+        <h1>Approve Employee</h1>
+        <p class="subtitle">Review and approve pending employee registrations</p>
+      </div>
+      <div class="links">
+        <a routerLink="/">Go to Register</a>
+        <a routerLink="/login">Go to Login</a>
+      </div>
+    </div>
+
+    @if (loading) {
+      <p>Loading pending employees...</p>
+    } @else if (!employees.length) {
+      <p>No pending employees.</p>
+    } @else {
+      <div class="list">
+        @for (employee of employees; track employee.id) {
+          <article class="item">
+            <div class="identity">
+              @if (employee.profileImage) {
+                <img [src]="employee.profileImage" alt="Employee profile" />
+              } @else {
+                <div class="avatar-fallback">No Photo</div>
+              }
+              <div>
+                <h3>{{ employee.firstName }} {{ employee.lastName }}</h3>
+                <p>{{ employee.email }}</p>
+                <p>สาขา: {{ employee.branch }} | Position: {{ employee.position }}</p>
+              </div>
+            </div>
+            <button type="button" (click)="approve(employee.id)">Approve</button>
+          </article>
+        }
+      </div>
+    }
+
+    @if (message) {
+      <p class="success">{{ message }}</p>
+    }
+
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
+  </section>
+</main>

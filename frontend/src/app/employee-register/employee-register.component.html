@@ -1,0 +1,101 @@
+<main class="page">
+  <section class="card">
+    <div class="header-row">
+      <div>
+        <h1>Employee Register</h1>
+        <p class="subtitle">Create a new employee record</p>
+      </div>
+      <div class="actions">
+        <a routerLink="/login">Go to Login</a>
+        <a routerLink="/employees/approve">Go to Approve</a>
+      </div>
+    </div>
+
+    <form [formGroup]="employeeForm" (ngSubmit)="submit()">
+      <label>
+        First Name
+        <input type="text" formControlName="firstName" />
+      </label>
+
+      <label>
+        Last Name
+        <input type="text" formControlName="lastName" />
+      </label>
+
+      <label>
+        Email
+        <input type="email" formControlName="email" />
+      </label>
+
+      <label>
+        Phone
+        <input type="text" formControlName="phone" />
+      </label>
+
+      <label>
+        สาขา
+        <input type="text" formControlName="branch" />
+      </label>
+
+      <label>
+        Position
+        <select formControlName="position">
+          <option value="">Select position</option>
+          @for (position of positionOptions; track position) {
+            <option [value]="position">{{ position }}</option>
+          }
+        </select>
+      </label>
+
+      <label>
+        Password
+        <div class="password-field">
+          <input [type]="showPassword ? 'text' : 'password'" formControlName="password" />
+          <button type="button" class="toggle-btn" (click)="togglePasswordVisibility()">
+            {{ showPassword ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+      </label>
+      @if (employeeForm.get('password')?.touched && employeeForm.get('password')?.errors?.['minlength']) {
+        <p class="field-error">Password ต้องมีอย่างน้อย 8 ตัวอักษร</p>
+      }
+
+      <label>
+        Confirm Password
+        <div class="password-field">
+          <input
+            [type]="showConfirmPassword ? 'text' : 'password'"
+            formControlName="confirmPassword"
+          />
+          <button type="button" class="toggle-btn" (click)="toggleConfirmPasswordVisibility()">
+            {{ showConfirmPassword ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+      </label>
+      @if (isPasswordMismatch) {
+        <p class="field-error">Password และ Confirm Password ไม่ตรงกัน</p>
+      }
+
+      <label>
+        Photo
+        <input type="file" accept="image/*" (change)="onImageChange($event)" />
+      </label>
+
+      @if (imagePreview) {
+        <img class="preview" [src]="imagePreview" alt="Employee photo preview" />
+      }
+
+      <button type="submit" [disabled]="isSubmitting || isPasswordMismatch">
+        {{ isSubmitting ? 'Saving...' : 'Register Employee' }}
+      </button>
+    </form>
+
+    @if (successMessage) {
+      <p class="success">{{ successMessage }}</p>
+    }
+
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
+  </section>
+</main>
