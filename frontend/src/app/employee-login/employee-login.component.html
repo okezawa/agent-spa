@@ -5,7 +5,7 @@
         <h1>Employee Login</h1>
         <p class="subtitle">Sign in with approved employee account</p>
       </div>
-      <a routerLink="/">Go to Register</a>
+     
     </div>
 
     <form [formGroup]="loginForm" (ngSubmit)="submit()">
@@ -43,7 +43,10 @@
         <button type="button" class="logout-btn" (click)="logout()">Logout</button>
       </div>
     }
-
+ <div class="links">
+        <a routerLink="/register">Go to Register</a>
+     
+      </div>
     @if (errorMessage) {
       <p class="error">{{ errorMessage }}</p>
     }

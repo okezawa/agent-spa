@@ -1,0 +1,77 @@
+<main class="page">
+  <section class="card">
+    <div class="header-row">
+      <div>
+        <h1>Branch Management</h1>
+        <p class="subtitle">Add service branches for employee registration</p>
+      </div>
+      <div class="links">
+        <a routerLink="/register">Go to Register</a>
+        <a routerLink="/login">Go to Login</a>
+      </div>
+    </div>
+
+    <form [formGroup]="branchForm" (ngSubmit)="createBranch()" class="create-form">
+      <label>
+        Branch Code (6 digits)
+        <input type="text" formControlName="code" placeholder="e.g. 000123" />
+      </label>
+
+      <label>
+        Branch Name
+        <input type="text" formControlName="name" placeholder="e.g. Sukhumvit" />
+      </label>
+
+      <label>
+        Address
+        <input type="text" formControlName="address" placeholder="Branch address" />
+      </label>
+
+      <label>
+        Phone
+        <input type="text" formControlName="phone" placeholder="Branch phone number" />
+      </label>
+
+      <label>
+        Status
+        <select formControlName="status">
+          <option value="ACTIVE">ACTIVE</option>
+          <option value="INACTIVE">INACTIVE</option>
+        </select>
+      </label>
+      <button type="submit" [disabled]="creating">
+        {{ creating ? 'Creating...' : 'Add Branch' }}
+      </button>
+    </form>
+
+    @if (loading) {
+      <p>Loading branches...</p>
+    } @else if (!branches.length) {
+      <p>No branches yet.</p>
+    } @else {
+      <ul class="branch-list">
+        @for (branch of branches; track branch.id) {
+          <li>
+            <div class="branch-row">
+              <span>
+                {{ branch.code }} - {{ branch.name }} ({{ branch.status }})<br />
+                {{ branch.address }} | {{ branch.phone }}
+              </span>
+              <div class="actions">
+                <button type="button" (click)="setStatus(branch, 'ACTIVE')">ACTIVE</button>
+                <button type="button" class="inactive" (click)="setStatus(branch, 'INACTIVE')">INACTIVE</button>
+              </div>
+            </div>
+          </li>
+        }
+      </ul>
+    }
+
+    @if (successMessage) {
+      <p class="success">{{ successMessage }}</p>
+    }
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
+  </section>
+</main>

@@ -1,1 +1,18 @@
-<router-outlet />
+@if (isAuthenticated) {
+  <header class="topbar">
+    <div class="brand">SPA Employee</div>
+    <nav class="nav-links">
+      <a routerLink="/register" routerLinkActive="active">
+        Register
+      </a>
+      <a routerLink="/login" routerLinkActive="active">Login</a>
+      <a routerLink="/employees/approve" routerLinkActive="active">Approve</a>
+      <a routerLink="/branches" routerLinkActive="active">Branches</a>
+      <button type="button" class="logout-btn" (click)="logout()">Logout</button>
+    </nav>
+  </header>
+}
+
+<main class="page-content" [class.with-nav]="isAuthenticated">
+  <router-outlet />
+</main>

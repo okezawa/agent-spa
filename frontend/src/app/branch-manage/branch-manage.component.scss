@@ -3,14 +3,14 @@
   display: grid;
   place-items: center;
   padding: 24px;
-  background: linear-gradient(140deg, #eff5ff 0%, #f2fff2 100%);
+  background: linear-gradient(135deg, #f5f7ff 0%, #eefaf4 100%);
 }
 
 .card {
-  width: min(100%, 520px);
+  width: min(100%, 560px);
   padding: 24px;
   border-radius: 16px;
-  background: #fff;
+  background: #ffffff;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
@@ -21,15 +21,15 @@
   gap: 12px;
 }
 
+.links {
+  display: flex;
+  gap: 10px;
+}
+
 .header-row a {
   color: #1769ff;
   text-decoration: none;
   font-weight: 600;
-}
-
-.links {
-  display: flex;
-  gap: 10px;
 }
 
 h1 {
@@ -41,9 +41,10 @@ h1 {
   color: #556;
 }
 
-form {
+.create-form {
   display: grid;
   gap: 12px;
+  margin-bottom: 16px;
 }
 
 label {
@@ -60,27 +61,15 @@ input {
   font-size: 14px;
 }
 
-.password-field {
-  display: flex;
-  gap: 8px;
-}
-
-.password-field input {
-  flex: 1;
-}
-
-.toggle-btn {
+select {
   border: 1px solid #ccd3de;
-  background: #f3f6fb;
-  color: #233;
   border-radius: 10px;
-  padding: 0 12px;
-  font-weight: 600;
-  cursor: pointer;
+  padding: 10px 12px;
+  font-size: 14px;
+  background: #fff;
 }
 
 button {
-  margin-top: 6px;
   border: 0;
   border-radius: 10px;
   padding: 12px;
@@ -95,25 +84,32 @@ button:disabled {
   cursor: not-allowed;
 }
 
-.profile {
-  margin-top: 12px;
-  border: 1px solid #d7e1ef;
-  border-radius: 12px;
-  padding: 12px;
-}
-
-.profile h3 {
-  margin: 0 0 8px;
-}
-
-.profile p {
+.branch-list {
   margin: 0;
-  color: #334;
+  padding-left: 20px;
 }
 
-.logout-btn {
-  margin-top: 10px;
-  background: #9b1c1c;
+.branch-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.actions {
+  display: flex;
+  gap: 6px;
+}
+
+.actions button {
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.actions .inactive {
+  background: #7b8794;
 }
 
 .success {

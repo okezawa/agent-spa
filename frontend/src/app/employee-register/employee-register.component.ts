@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import {
+  Branch,
   CreateEmployeePayload,
   EmployeeService
 } from '../services/employee.service';
@@ -22,6 +23,7 @@ export class EmployeeRegisterComponent {
   successMessage = '';
   errorMessage = '';
   imagePreview = '';
+  branches: Branch[] = [];
   showPassword = false;
   showConfirmPassword = false;
   readonly positionOptions = [
@@ -45,6 +47,10 @@ export class EmployeeRegisterComponent {
     profileImage: ['']
   });
 
+  ngOnInit(): void {
+    this.loadBranches();
+  }
+
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
@@ -57,6 +63,17 @@ export class EmployeeRegisterComponent {
     const password = this.employeeForm.get('password')?.value ?? '';
     const confirmPassword = this.employeeForm.get('confirmPassword')?.value ?? '';
     return !!password && !!confirmPassword && password !== confirmPassword;
+  }
+
+  loadBranches(): void {
+    this.employeeService.getBranches('ACTIVE').subscribe({
+      next: (branches) => {
+        this.branches = branches;
+      },
+      error: () => {
+        this.errorMessage = 'โหลดรายการสาขาไม่สำเร็จ';
+      }
+    });
   }
 
   onImageChange(event: Event): void {

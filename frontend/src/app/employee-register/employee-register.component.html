@@ -6,6 +6,7 @@
         <p class="subtitle">Create a new employee record</p>
       </div>
       <div class="actions">
+        <a routerLink="/branches">Manage Branches</a>
         <a routerLink="/login">Go to Login</a>
         <a routerLink="/employees/approve">Go to Approve</a>
       </div>
@@ -34,7 +35,12 @@
 
       <label>
         สาขา
-        <input type="text" formControlName="branch" />
+        <select formControlName="branch">
+          <option value="">Select branch</option>
+          @for (branch of branches; track branch.id) {
+            <option [value]="branch.name">{{ branch.code }} - {{ branch.name }}</option>
+          }
+        </select>
       </label>
 
       <label>

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Employee, EmployeeService } from '../services/employee.service';
 
 @Component({
@@ -14,6 +14,7 @@ import { Employee, EmployeeService } from '../services/employee.service';
 export class EmployeeLoginComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly employeeService = inject(EmployeeService);
+  private readonly router = inject(Router);
 
   showPassword = false;
   isSubmitting = false;
@@ -35,10 +36,12 @@ export class EmployeeLoginComponent implements OnInit {
   }
 
   checkCurrentSession(): void {
-    this.employeeService.getCurrentEmployee().subscribe({
+    this.employeeService.getAuthStatus().subscribe({
       next: (response) => {
         this.loggedInEmployee = response.employee;
-        this.successMessage = 'already logged in';
+        if (response.authenticated) {
+          this.successMessage = 'already logged in';
+        }
       },
       error: () => {
         this.loggedInEmployee = null;
@@ -64,6 +67,7 @@ export class EmployeeLoginComponent implements OnInit {
         this.successMessage = response.message;
         this.loggedInEmployee = response.employee;
         this.isSubmitting = false;
+        this.router.navigateByUrl('/employees/approve');
       },
       error: (error) => {
         this.errorMessage = error?.error?.message || 'Login failed.';
@@ -78,6 +82,7 @@ export class EmployeeLoginComponent implements OnInit {
         this.successMessage = response.message;
         this.errorMessage = '';
         this.loggedInEmployee = null;
+        this.router.navigateByUrl('/login');
       },
       error: (error) => {
         this.errorMessage = error?.error?.message || 'Logout failed.';

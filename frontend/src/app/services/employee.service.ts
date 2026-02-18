@@ -41,6 +41,22 @@ export interface EmployeeLoginResponse {
   employee: Employee;
 }
 
+export interface EmployeeAuthStatusResponse {
+  authenticated: boolean;
+  employee: Employee | null;
+}
+
+export interface Branch {
+  id: number;
+  code: string;
+  name: string;
+  address?: string | null;
+  phone?: string | null;
+  status: 'ACTIVE' | 'INACTIVE';
+  createdAt: string;
+  updatedAt: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class EmployeeService {
   private readonly http = inject(HttpClient);
@@ -76,11 +92,37 @@ export class EmployeeService {
     );
   }
 
+  getAuthStatus() {
+    return this.http.get<EmployeeAuthStatusResponse>(
+      `${this.apiBaseUrl}/api/employees/auth-status`,
+      { withCredentials: true }
+    );
+  }
+
   logoutEmployee() {
     return this.http.post<{ message: string }>(
       `${this.apiBaseUrl}/api/employees/logout`,
       {},
       { withCredentials: true }
     );
+  }
+
+  getBranches(status?: 'ACTIVE' | 'INACTIVE') {
+    const query = status ? `?status=${status}` : '';
+    return this.http.get<Branch[]>(`${this.apiBaseUrl}/api/branches${query}`);
+  }
+
+  createBranch(payload: {
+    code: string;
+    name: string;
+    address: string;
+    phone: string;
+    status: 'ACTIVE' | 'INACTIVE';
+  }) {
+    return this.http.post<Branch>(`${this.apiBaseUrl}/api/branches`, payload);
+  }
+
+  updateBranchStatus(branchId: number, status: 'ACTIVE' | 'INACTIVE') {
+    return this.http.patch<Branch>(`${this.apiBaseUrl}/api/branches/${branchId}/status`, { status });
   }
 }

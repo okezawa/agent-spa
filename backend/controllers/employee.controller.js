@@ -125,6 +125,15 @@ async function createEmployee(req, res, next) {
       });
     }
 
+    const existingBranch = await prisma.branch.findUnique({
+      where: { name: branch },
+      select: { id: true, status: true },
+    });
+
+    if (!existingBranch || existingBranch.status !== "ACTIVE") {
+      return res.status(400).json({ message: "selected branch is invalid" });
+    }
+
     const passwordHash = await hashPassword(password);
 
     const employee = await prisma.employee.create({
@@ -240,6 +249,37 @@ async function getCurrentEmployee(req, res, next) {
   }
 }
 
+async function getEmployeeAuthStatus(req, res, next) {
+  try {
+    const token = req.cookies?.[authCookieName];
+    if (!token) {
+      return res.json({ authenticated: false, employee: null });
+    }
+
+    const payload = jwt.verify(token, jwtSecret);
+    const employeeId = Number(payload?.sub);
+    if (!Number.isInteger(employeeId) || employeeId <= 0) {
+      return res.json({ authenticated: false, employee: null });
+    }
+
+    const employee = await prisma.employee.findUnique({
+      where: { id: employeeId },
+      select: publicEmployeeSelect,
+    });
+
+    if (!employee) {
+      return res.json({ authenticated: false, employee: null });
+    }
+
+    return res.json({ authenticated: true, employee });
+  } catch (error) {
+    if (error?.name === "JsonWebTokenError" || error?.name === "TokenExpiredError") {
+      return res.json({ authenticated: false, employee: null });
+    }
+    next(error);
+  }
+}
+
 function logoutEmployee(_req, res) {
   res.clearCookie(authCookieName, {
     httpOnly: true,
@@ -284,6 +324,7 @@ module.exports = {
   listPendingEmployees,
   loginEmployee,
   getCurrentEmployee,
+  getEmployeeAuthStatus,
   logoutEmployee,
   approveEmployee,
   disconnectEmployeePrisma,

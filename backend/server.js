@@ -6,8 +6,10 @@ const cookieParser = require("cookie-parser");
 const healthRoutes = require("./routes/health.routes");
 const userRoutes = require("./routes/user.routes");
 const employeeRoutes = require("./routes/employee.routes");
+const branchRoutes = require("./routes/branch.routes");
 const { disconnectPrisma } = require("./controllers/user.controller");
 const { disconnectEmployeePrisma } = require("./controllers/employee.controller");
+const { disconnectBranchPrisma } = require("./controllers/branch.controller");
 
 const app = express();
 const port = Number(process.env.PORT) || 4000;
@@ -26,6 +28,7 @@ app.use(cookieParser());
 app.use("/api", healthRoutes);
 app.use("/api", userRoutes);
 app.use("/api", employeeRoutes);
+app.use("/api", branchRoutes);
 
 app.use((err, _req, res, _next) => {
   if (err?.type === "entity.too.large") {
@@ -44,7 +47,11 @@ const server = app.listen(port, () => {
 });
 
 const shutdown = async () => {
-  await Promise.all([disconnectPrisma(), disconnectEmployeePrisma()]);
+  await Promise.all([
+    disconnectPrisma(),
+    disconnectEmployeePrisma(),
+    disconnectBranchPrisma(),
+  ]);
   server.close(() => process.exit(0));
 };
 
