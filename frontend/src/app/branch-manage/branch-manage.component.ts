@@ -18,6 +18,8 @@ export class BranchManageComponent {
   branches: Branch[] = [];
   loading = false;
   creating = false;
+  editingBranchId: number | null = null;
+  deletingBranchId: number | null = null;
   successMessage = '';
   errorMessage = '';
 
@@ -58,22 +60,35 @@ export class BranchManageComponent {
     this.successMessage = '';
     this.errorMessage = '';
 
-    this.employeeService.createBranch({
+    const payload = {
       code: code ?? '',
       name: name ?? '',
       address: address ?? '',
       phone: phone ?? '',
       status: status ?? 'ACTIVE',
-    }).subscribe({
+    };
+
+    const request$ = this.editingBranchId
+      ? this.employeeService.updateBranch(this.editingBranchId, payload)
+      : this.employeeService.createBranch(payload);
+
+    request$.subscribe({
       next: (branch) => {
-        this.successMessage = `Branch "${branch.name}" created`;
-        this.branchForm.reset();
-        this.branchForm.patchValue({ status: 'ACTIVE' });
-        this.branches = [...this.branches, branch].sort((a, b) => a.name.localeCompare(b.name));
+        this.successMessage = this.editingBranchId
+          ? `Branch "${branch.name}" updated`
+          : `Branch "${branch.name}" created`;
+        if (this.editingBranchId) {
+          this.branches = this.branches
+            .map((item) => (item.id === branch.id ? branch : item))
+            .sort((a, b) => a.name.localeCompare(b.name));
+        } else {
+          this.branches = [...this.branches, branch].sort((a, b) => a.name.localeCompare(b.name));
+        }
+        this.resetForm();
         this.creating = false;
       },
       error: (error) => {
-        this.errorMessage = error?.error?.message || 'Failed to create branch.';
+        this.errorMessage = error?.error?.message || 'Failed to save branch.';
         this.creating = false;
       }
     });
@@ -90,5 +105,53 @@ export class BranchManageComponent {
         this.errorMessage = error?.error?.message || 'Failed to update branch status.';
       }
     });
+  }
+
+  editBranch(branch: Branch): void {
+    this.editingBranchId = branch.id;
+    this.successMessage = '';
+    this.errorMessage = '';
+    this.branchForm.patchValue({
+      code: branch.code,
+      name: branch.name,
+      address: branch.address ?? '',
+      phone: branch.phone ?? '',
+      status: branch.status,
+    });
+  }
+
+  cancelEdit(): void {
+    this.resetForm();
+  }
+
+  removeBranch(branch: Branch): void {
+    if (!confirm(`Delete branch "${branch.name}"?`)) {
+      return;
+    }
+
+    this.deletingBranchId = branch.id;
+    this.successMessage = '';
+    this.errorMessage = '';
+
+    this.employeeService.deleteBranch(branch.id).subscribe({
+      next: () => {
+        this.branches = this.branches.filter((item) => item.id !== branch.id);
+        this.successMessage = `Branch "${branch.name}" deleted`;
+        if (this.editingBranchId === branch.id) {
+          this.resetForm();
+        }
+        this.deletingBranchId = null;
+      },
+      error: (error) => {
+        this.errorMessage = error?.error?.message || 'Failed to delete branch.';
+        this.deletingBranchId = null;
+      }
+    });
+  }
+
+  private resetForm(): void {
+    this.editingBranchId = null;
+    this.branchForm.reset();
+    this.branchForm.patchValue({ status: 'ACTIVE' });
   }
 }

@@ -1,18 +1,47 @@
 @if (isAuthenticated) {
   <header class="topbar">
     <div class="brand">SPA Employee</div>
-    <nav class="nav-links">
-      <a routerLink="/register" routerLinkActive="active">
-        Register
-      </a>
-      <a routerLink="/login" routerLinkActive="active">Login</a>
-      <a routerLink="/employees/approve" routerLinkActive="active">Approve</a>
-      <a routerLink="/branches" routerLinkActive="active">Branches</a>
+    <nav class="top-links">
+      <a routerLink="/guests/register" routerLinkActive="active">Register Guest</a>
       <button type="button" class="logout-btn" (click)="logout()">Logout</button>
     </nav>
   </header>
+
+  @if (!isSidebarOpen) {
+    <button
+      type="button"
+      class="hamburger-float"
+      (click)="toggleSidebar()"
+      aria-label="Open menu"
+      [attr.aria-expanded]="isSidebarOpen"
+    >
+      <span></span><span></span><span></span>
+    </button>
+  }
+
+  <aside class="sidebar" [class.open]="isSidebarOpen">
+    <div class="sidebar-header">
+      <span class="sidebar-title">Menu</span>
+      <button type="button" class="sidebar-close-btn" (click)="closeSidebar()" aria-label="Close menu">×</button>
+    </div>
+    <nav class="side-links">
+      <a routerLink="/bookings" routerLinkActive="active" (click)="closeSidebar()">Booking</a>
+      <a routerLink="/employees/approve" routerLinkActive="active" (click)="closeSidebar()">Approve</a>
+      <a routerLink="/branches" routerLinkActive="active" (click)="closeSidebar()">Branches</a>
+      <a routerLink="/services" routerLinkActive="active" (click)="closeSidebar()">Services</a>
+      <a routerLink="/rooms" routerLinkActive="active" (click)="closeSidebar()">Rooms</a>
+    </nav>
+  </aside>
+
+  @if (isSidebarOpen) {
+    <button class="menu-backdrop" type="button" (click)="closeSidebar()" aria-label="Close menu"></button>
+  }
 }
 
-<main class="page-content" [class.with-nav]="isAuthenticated">
+<main
+  class="page-content"
+  [class.with-layout]="isAuthenticated"
+  [class.sidebar-open]="isAuthenticated && isSidebarOpen"
+>
   <router-outlet />
 </main>

@@ -1,0 +1,88 @@
+<section class="room-page">
+  <div class="card">
+    <h1>Room Settings</h1>
+    <p class="subtitle">Manage room name, room type, branch, and maintenance status.</p>
+
+    @if (successMessage) {
+      <p class="success">{{ successMessage }}</p>
+    }
+
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
+
+    <form [formGroup]="roomForm" (ngSubmit)="submit()" class="room-form">
+      <label for="name">Room Name</label>
+      <input id="name" type="text" formControlName="name" placeholder="Room A, IV-01" />
+
+      <label for="roomType">Room Type</label>
+      <input id="roomType" type="text" formControlName="roomType" placeholder="Facial, IV, Botox" />
+
+      <label for="color">Room Color</label>
+      <select id="color" formControlName="color">
+        @for (color of roomColorOptions; track color.value) {
+          <option [value]="color.value">{{ color.label }} ({{ color.value }})</option>
+        }
+      </select>
+
+      <label for="branchId">Branch</label>
+      <select id="branchId" formControlName="branchId">
+        <option [ngValue]="0" disabled>Select branch</option>
+        @for (branch of branches; track branch.id) {
+          <option [ngValue]="branch.id">{{ branch.code }} - {{ branch.name }}</option>
+        }
+      </select>
+
+      <label for="status">Status</label>
+      <select id="status" formControlName="status">
+        <option value="OPEN">OPEN</option>
+        <option value="MAINTENANCE">MAINTENANCE</option>
+      </select>
+
+      <button type="submit" [disabled]="saving">
+        {{ saving ? 'Saving...' : (editingRoomId ? 'Update Room' : 'Add Room') }}
+      </button>
+      @if (editingRoomId) {
+        <button type="button" class="cancel-btn" (click)="cancelEdit()">Cancel Edit</button>
+      }
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>Room List</h2>
+
+    @if (loading) {
+      <p>Loading rooms...</p>
+    } @else if (!rooms.length) {
+      <p>No rooms yet.</p>
+    } @else {
+      <div class="room-list">
+        @for (room of rooms; track room.id) {
+          <article class="room-item">
+            <header>
+              <h3><span class="room-color-dot" [style.backgroundColor]="room.color"></span>{{ room.name }}</h3>
+              <span [class.maintenance]="room.status === 'MAINTENANCE'">{{ room.status }}</span>
+            </header>
+            <p>Type: {{ room.roomType }}</p>
+            <p>Color: {{ room.color }}</p>
+            <p>Branch: {{ room.branch.code }} - {{ room.branch.name }}</p>
+
+            <div class="actions">
+              <button type="button" class="open-btn" (click)="setRoomStatus(room, 'OPEN')">OPEN</button>
+              <button type="button" class="maintain-btn" (click)="setRoomStatus(room, 'MAINTENANCE')">MAINTENANCE</button>
+              <button type="button" class="edit-btn" (click)="editRoom(room)">Edit</button>
+              <button
+                type="button"
+                class="delete-btn"
+                [disabled]="deletingRoomId === room.id"
+                (click)="removeRoom(room)"
+              >
+                {{ deletingRoomId === room.id ? 'Deleting...' : 'Delete' }}
+              </button>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </div>
+</section>

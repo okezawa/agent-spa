@@ -1,0 +1,142 @@
+.room-page {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  padding: 20px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #d8dee7;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+}
+
+.subtitle {
+  margin: 8px 0 0;
+  color: #4a5568;
+}
+
+.room-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+label {
+  font-weight: 700;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #bcc7d6;
+  font-size: 14px;
+  box-sizing: border-box;
+  background: #fff;
+}
+
+button {
+  padding: 11px 12px;
+  border: 0;
+  border-radius: 10px;
+  color: #fff;
+  background: #0b5fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  background: #6b7280;
+}
+
+.room-list {
+  margin-top: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.room-item {
+  border: 1px solid #d8dee7;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.room-item header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.room-item h3 {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.room-color-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  border: 1px solid #cbd5e1;
+  display: inline-block;
+}
+
+.maintenance {
+  color: #b91c1c;
+  font-weight: 700;
+}
+
+.actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.actions button {
+  font-size: 13px;
+  padding: 8px 10px;
+}
+
+.open-btn {
+  background: #0f766e;
+}
+
+.maintain-btn {
+  background: #c2410c;
+}
+
+.edit-btn {
+  background: #1d4ed8;
+}
+
+.delete-btn {
+  background: #b3261e;
+}
+
+.success {
+  margin-top: 12px;
+  color: #0b6d22;
+  font-weight: 600;
+}
+
+.error {
+  margin-top: 12px;
+  color: #b91c1c;
+  font-weight: 600;
+}

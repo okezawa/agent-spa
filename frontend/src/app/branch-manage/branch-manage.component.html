@@ -40,8 +40,11 @@
         </select>
       </label>
       <button type="submit" [disabled]="creating">
-        {{ creating ? 'Creating...' : 'Add Branch' }}
+        {{ creating ? 'Saving...' : (editingBranchId ? 'Update Branch' : 'Add Branch') }}
       </button>
+      @if (editingBranchId) {
+        <button type="button" class="cancel-btn" (click)="cancelEdit()">Cancel Edit</button>
+      }
     </form>
 
     @if (loading) {
@@ -60,6 +63,15 @@
               <div class="actions">
                 <button type="button" (click)="setStatus(branch, 'ACTIVE')">ACTIVE</button>
                 <button type="button" class="inactive" (click)="setStatus(branch, 'INACTIVE')">INACTIVE</button>
+                <button type="button" class="edit" (click)="editBranch(branch)">Edit</button>
+                <button
+                  type="button"
+                  class="delete"
+                  [disabled]="deletingBranchId === branch.id"
+                  (click)="removeBranch(branch)"
+                >
+                  {{ deletingBranchId === branch.id ? 'Deleting...' : 'Delete' }}
+                </button>
               </div>
             </div>
           </li>

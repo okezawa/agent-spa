@@ -1,0 +1,98 @@
+<section class="service-manage-page">
+  <div class="card">
+    <h1>Service Settings</h1>
+    <p class="subtitle">Manage service list, duration, price per unit, and employee providers.</p>
+
+    @if (successMessage) {
+      <p class="success">{{ successMessage }}</p>
+    }
+
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
+
+    <form [formGroup]="serviceForm" (ngSubmit)="submit()" class="service-form">
+      <label for="name">Service Name</label>
+      <input id="name" type="text" formControlName="name" placeholder="Facial, IV, Botox" />
+
+      <div class="grid-2">
+        <div>
+          <label for="durationMinutes">Duration (minutes)</label>
+          <input id="durationMinutes" type="number" min="1" formControlName="durationMinutes" />
+        </div>
+        <div>
+          <label for="pricePerUnit">Price / Unit</label>
+          <input id="pricePerUnit" type="number" min="0" step="0.01" formControlName="pricePerUnit" />
+        </div>
+      </div>
+
+      <fieldset class="providers">
+        <legend>Who can provide this service?</legend>
+        @if (approvedEmployees.length === 0) {
+          <p class="hint">No approved Nurse/Therapist found.</p>
+        } @else {
+          <div class="provider-grid">
+            @for (employee of approvedEmployees; track employee.id) {
+              <label class="provider-item">
+                <input
+                  type="checkbox"
+                  [checked]="isProviderSelected(employee.id)"
+                  (change)="onToggleProvider(employee.id, $any($event.target).checked)"
+                />
+                <span>{{ employee.firstName }} {{ employee.lastName }} ({{ employee.position || 'N/A' }})</span>
+              </label>
+            }
+          </div>
+        }
+      </fieldset>
+
+      <button type="submit" [disabled]="creating">
+        {{ creating ? 'Saving...' : (editingServiceId ? 'Update Service' : 'Save Service') }}
+      </button>
+      @if (editingServiceId) {
+        <button type="button" class="cancel-btn" (click)="cancelEdit()">Cancel Edit</button>
+      }
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>Service List</h2>
+
+    @if (loading) {
+      <p>Loading...</p>
+    } @else if (services.length === 0) {
+      <p>No service configured yet.</p>
+    } @else {
+      <div class="service-list">
+        @for (service of services; track service.id) {
+          <article class="service-item">
+            <header>
+              <h3>{{ service.name }}</h3>
+              <span class="price">{{ service.pricePerUnit | number: '1.2-2' }}</span>
+            </header>
+            <p>Duration: {{ service.durationMinutes }} minutes</p>
+            <p>
+              Providers:
+              @if (service.providers.length === 0) {
+                <span>-</span>
+              } @else {
+                <span>{{ providerNames(service) }}</span>
+              }
+            </p>
+            <div class="actions">
+              <button type="button" class="edit-btn" (click)="editService(service)">Edit</button>
+              <button
+                type="button"
+                class="delete-btn"
+                [disabled]="deletingServiceId === service.id"
+                (click)="removeService(service)"
+              >
+                {{ deletingServiceId === service.id ? 'Deleting...' : 'Delete' }}
+              </button>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </div>
+</section>

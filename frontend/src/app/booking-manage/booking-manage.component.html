@@ -1,0 +1,210 @@
+<section class="booking-page">
+  <div class="card">
+    <h1>Booking</h1>
+    <p class="subtitle">Room เดียว, เวลาเดียว, เพิ่มหลายแขกได้ในครั้งเดียว</p>
+
+    @if (successMessage) {<p class="success">{{ successMessage }}</p>}
+    @if (errorMessage) {<p class="error">{{ errorMessage }}</p>}
+
+    <form class="booking-form" [formGroup]="bookingForm" (ngSubmit)="submit()">
+      <h3 class="rows-title">Guest Rows</h3>
+      @for (row of guestRows; track $index) {
+        <div class="guest-row">
+          <div class="grid-2">
+            <label>
+              Guest Name
+              <input
+                type="text"
+                [value]="row.guestName"
+                (input)="updateGuestName($index, $any($event.target).value)"
+                placeholder="เช่น แขก A"
+              />
+            </label>
+            <label>
+              Guest Phone
+              <input
+                type="text"
+                [value]="row.guestPhone"
+                (input)="updateGuestPhone($index, $any($event.target).value)"
+                placeholder="เช่น 0998789"
+              />
+            </label>
+          </div>
+
+          <div class="grid-2">
+            <div>
+              <label class="block-label">Services</label>
+              <div class="picker-row">
+                <select [value]="serviceToAddByRow[$index] ?? ''" (change)="onServiceToAddChange($index, $any($event.target).value)">
+                  @for (service of services; track service.id) {
+                    <option [value]="service.id">{{ service.name }} ({{ service.durationMinutes }} mins)</option>
+                  }
+                </select>
+                <button type="button" class="picker-add-btn" (click)="addServiceToRow($index)">Add</button>
+              </div>
+              <div class="selected-pill-list">
+                @for (serviceId of row.serviceIds; track serviceId) {
+                  <button type="button" class="pill-btn" (click)="removeServiceFromRow($index, serviceId)">
+                    {{ serviceNameById(serviceId) }} x
+                  </button>
+                }
+              </div>
+            </div>
+
+            <div>
+              <label class="block-label">Employees</label>
+              <div class="picker-row">
+                <select [value]="employeeToAddByRow[$index] ?? ''" (change)="onEmployeeToAddChange($index, $any($event.target).value)">
+                  @for (employee of rowEmployeeOptions(row); track employee.id) {
+                    <option [value]="employee.id">{{ employee.firstName }} {{ employee.lastName }}</option>
+                  }
+                </select>
+                <button type="button" class="picker-add-btn" (click)="addEmployeeToRow($index)">Add</button>
+              </div>
+              <div class="selected-pill-list">
+                @for (employeeId of row.employeeIds; track employeeId) {
+                  <button type="button" class="pill-btn" (click)="removeEmployeeFromRow($index, employeeId)">
+                    {{ employeeNameById(employeeId) }} x
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <label>
+              Start Datetime
+              <input
+                type="datetime-local"
+                [value]="row.startAt"
+                (input)="updateGuestStartAt($index, $any($event.target).value)"
+              />
+            </label>
+            <label>
+              End Datetime
+              <input
+                type="datetime-local"
+                [value]="row.endAt"
+                (input)="updateGuestEndAt($index, $any($event.target).value)"
+              />
+            </label>
+          </div>
+
+          <div class="row-actions">
+            @if (guestRows.length > 1) {
+              <button type="button" class="remove-row-btn" (click)="removeGuestRow($index)">Remove Row</button>
+            }
+          </div>
+        </div>
+      }
+
+      @if (!editingBookingId) {
+        <button type="button" class="add-row-btn" (click)="addGuestRow()">Add Guest Row</button>
+      }
+
+      <label>
+        Room
+        <select formControlName="roomId">
+          @for (room of rooms; track room.id) {
+            <option [ngValue]="room.id">{{ room.name }} ({{ room.branch.name }})</option>
+          }
+        </select>
+      </label>
+
+      <label>
+        Status
+        <select formControlName="status">
+          @for (status of bookingStatuses; track status) {
+            <option [value]="status">{{ status }}</option>
+          }
+        </select>
+      </label>
+
+      <label>
+        Notes
+        <textarea rows="2" formControlName="notes"></textarea>
+      </label>
+      <button type="submit" [disabled]="saving">{{ saving ? 'Saving...' : (editingBookingId ? 'Update Booking' : 'Create Booking') }}</button>
+      @if (editingBookingId) {
+        <button type="button" class="cancel-edit-btn" (click)="cancelEdit()">Cancel Edit</button>
+      }
+    </form>
+  </div>
+
+  <div class="card">
+    <div class="calendar-header">
+      <h2>{{ monthTitle() }}</h2>
+      <div class="calendar-nav">
+        <button type="button" (click)="previousMonth()">Prev</button>
+        <button type="button" (click)="nextMonth()">Next</button>
+      </div>
+    </div>
+
+    <div class="weekdays">
+      <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+    </div>
+
+    <div class="calendar-grid">
+      @for (day of calendarDays; track $index) {
+        <button
+          type="button"
+          class="day-cell"
+          [class.empty]="!day"
+          [class.selected]="isSelectedDay(day)"
+          [class.has-booking]="countBookingsByDay(day) > 0"
+          [disabled]="!day"
+          (click)="day && selectCalendarDay(day)"
+        >
+          @if (day) {
+            <span class="day-number">{{ day.getDate() }}</span>
+            <span class="badge">{{ countBookingsByDay(day) }}</span>
+          }
+        </button>
+      }
+    </div>
+
+    <h3 class="selected-title">Bookings on {{ selectedDay | date:'dd/MM/yyyy' }}</h3>
+
+    @if (selectedDayBookings.length === 0) {
+      <p>No booking on this day.</p>
+    } @else {
+      <div class="day-bookings">
+        @for (booking of selectedDayBookings; track booking.id) {
+          <article
+            class="booking-item"
+            [class.booking-item-cancelled]="booking.status === 'CANCELLED'"
+            [class.booking-item-completed]="booking.status === 'COMPLETED'"
+          >
+            <p>
+              <strong>{{ booking.startAt | date:'HH:mm' }}</strong> - {{ booking.endAt | date:'HH:mm' }}
+              (<span
+                [class.status-cancelled]="booking.status === 'CANCELLED'"
+                [class.status-completed]="booking.status === 'COMPLETED'"
+              >{{ booking.status }}</span>)
+            </p>
+            <p>Room: {{ booking.room.name }}</p>
+            @for (row of bookingGuestRowsForDisplay(booking); track $index) {
+              <p>Guest {{ $index + 1 }}: {{ row.guestName }} &nbsp; Phone: {{ row.guestPhone || '-' }}</p>
+              @for (pair of bookingServiceEmployeePairs(row, booking); track $index) {
+                <p>Service {{ $index + 1 }}: {{ pair.service }} + {{ pair.employee }}</p>
+              }
+            }
+            @if (booking.status === 'BOOKED') {
+              <div class="booking-item-actions">
+                <button type="button" class="edit-btn" (click)="editBooking(booking)">Edit</button>
+                <button
+                  type="button"
+                  class="cancel-booking-btn"
+                  [disabled]="saving"
+                  (click)="cancelBooking(booking)"
+                >
+                  Cancel Booking
+                </button>
+              </div>
+            }
+          </article>
+        }
+      </div>
+    }
+  </div>
+</section>

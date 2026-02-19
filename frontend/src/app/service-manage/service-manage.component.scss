@@ -1,0 +1,159 @@
+.service-manage-page {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  padding: 20px;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #d8dee7;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+}
+
+.subtitle {
+  margin: 8px 0 0;
+  color: #4a5568;
+}
+
+.service-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+label,
+legend {
+  font-weight: 700;
+}
+
+input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #bcc7d6;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.grid-2 {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.providers {
+  border: 1px solid #d3dce8;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.provider-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.provider-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.provider-item input {
+  width: auto;
+}
+
+button {
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #0b5fff;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:disabled {
+  background: #7f8ba0;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  background: #6b7280;
+}
+
+.service-list {
+  margin-top: 16px;
+  display: grid;
+  gap: 12px;
+}
+
+.service-item {
+  border: 1px solid #d8dee7;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.service-item header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.price {
+  font-weight: 700;
+  color: #0b5fff;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.actions button {
+  flex: 1;
+  font-size: 14px;
+  padding: 10px;
+}
+
+.edit-btn {
+  background: #1d4ed8;
+}
+
+.delete-btn {
+  background: #b91c1c;
+}
+
+.hint {
+  color: #6b7280;
+  margin: 0;
+}
+
+.success {
+  margin-top: 12px;
+  color: #0b6d22;
+  font-weight: 600;
+}
+
+.error {
+  margin-top: 12px;
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}

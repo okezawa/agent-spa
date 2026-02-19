@@ -1,0 +1,109 @@
+<section class="guest-page">
+  <div class="card">
+    <h1>Guest Register</h1>
+    <p class="subtitle">Register guest information before using services.</p>
+
+    @if (successMessage) {
+      <p class="success">{{ successMessage }}</p>
+    }
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
+
+    <form [formGroup]="guestForm" (ngSubmit)="submit()" class="guest-form">
+      <div class="grid-2">
+        <label>
+          First Name
+          <input type="text" formControlName="firstName" />
+        </label>
+
+        <label>
+          Last Name
+          <input type="text" formControlName="lastName" />
+        </label>
+      </div>
+
+      <label>
+        Citizen ID (13 digits)
+        <input type="text" formControlName="citizenId" maxlength="13" />
+      </label>
+
+      <div class="grid-2">
+        <label>
+          Date of Birth
+          <input type="date" formControlName="dateOfBirth" />
+        </label>
+
+        <label>
+          Age
+          <input type="text" [value]="currentFormAge() ?? '-'" readonly />
+        </label>
+      </div>
+
+      <label>
+        Address
+        <input type="text" formControlName="address" />
+      </label>
+
+      <div class="grid-2">
+        <label>
+          Phone
+          <input type="text" formControlName="phone" />
+        </label>
+
+        <label>
+          Country
+          <input type="text" formControlName="country" placeholder="Thailand" />
+        </label>
+      </div>
+
+      <label>
+        LINE ID
+        <input type="text" formControlName="lineId" />
+      </label>
+
+      <label>
+        Others / Notes
+        <textarea rows="3" formControlName="otherNotes"></textarea>
+      </label>
+
+      <button type="submit" [disabled]="saving">
+        {{ saving ? 'Saving...' : 'Register Guest' }}
+      </button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>Recent Guests</h2>
+
+    @if (loading) {
+      <p>Loading guests...</p>
+    } @else if (!guests.length) {
+      <p>No guest data yet.</p>
+    } @else {
+      <div class="guest-list">
+        @for (guest of guests; track guest.id) {
+          <article class="guest-item">
+            <h3>{{ guest.firstName }} {{ guest.lastName }}</h3>
+            <p>Member Code: {{ guest.memberCode }}</p>
+            <p>Register Date: {{ guest.createdAt | date: 'dd/MM/yyyy HH:mm' }}</p>
+            <p>ID Card: {{ guest.citizenId }}</p>
+            <p>Date of Birth: {{ guest.dateOfBirth ? (guest.dateOfBirth | date: 'dd/MM/yyyy') : '-' }}</p>
+            <p>Age: {{ guest.age ?? '-' }}</p>
+            <p>Phone: {{ guest.phone }}</p>
+            <p>Country: {{ guest.country }}</p>
+            @if (guest.lineId) {
+              <p>LINE: {{ guest.lineId }}</p>
+            }
+            @if (guest.address) {
+              <p>Address: {{ guest.address }}</p>
+            }
+            @if (guest.otherNotes) {
+              <p>Notes: {{ guest.otherNotes }}</p>
+            }
+          </article>
+        }
+      </div>
+    }
+  </div>
+</section>

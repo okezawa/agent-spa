@@ -84,6 +84,10 @@ button:disabled {
   cursor: not-allowed;
 }
 
+.cancel-btn {
+  background: #6b7280;
+}
+
 .branch-list {
   margin: 0;
   padding-left: 20px;
@@ -110,6 +114,14 @@ button:disabled {
 
 .actions .inactive {
   background: #7b8794;
+}
+
+.actions .edit {
+  background: #1d4ed8;
+}
+
+.actions .delete {
+  background: #b3261e;
 }
 
 .success {

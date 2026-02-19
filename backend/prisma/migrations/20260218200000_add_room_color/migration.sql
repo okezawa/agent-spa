@@ -1,0 +1,9 @@
+ALTER TABLE "Room"
+ADD COLUMN IF NOT EXISTS "color" TEXT;
+
+UPDATE "Room"
+SET "color" = '#2563EB'
+WHERE "color" IS NULL OR "color" = '';
+
+ALTER TABLE "Room"
+ALTER COLUMN "color" SET NOT NULL;

@@ -7,9 +7,17 @@ const healthRoutes = require("./routes/health.routes");
 const userRoutes = require("./routes/user.routes");
 const employeeRoutes = require("./routes/employee.routes");
 const branchRoutes = require("./routes/branch.routes");
+const serviceRoutes = require("./routes/service.routes");
+const roomRoutes = require("./routes/room.routes");
+const guestRoutes = require("./routes/guest.routes");
+const bookingRoutes = require("./routes/booking.routes");
 const { disconnectPrisma } = require("./controllers/user.controller");
 const { disconnectEmployeePrisma } = require("./controllers/employee.controller");
 const { disconnectBranchPrisma } = require("./controllers/branch.controller");
+const { disconnectServicePrisma } = require("./controllers/service.controller");
+const { disconnectRoomPrisma } = require("./controllers/room.controller");
+const { disconnectGuestPrisma } = require("./controllers/guest.controller");
+const { disconnectBookingPrisma } = require("./controllers/booking.controller");
 
 const app = express();
 const port = Number(process.env.PORT) || 4000;
@@ -29,6 +37,10 @@ app.use("/api", healthRoutes);
 app.use("/api", userRoutes);
 app.use("/api", employeeRoutes);
 app.use("/api", branchRoutes);
+app.use("/api", serviceRoutes);
+app.use("/api", roomRoutes);
+app.use("/api", guestRoutes);
+app.use("/api", bookingRoutes);
 
 app.use((err, _req, res, _next) => {
   if (err?.type === "entity.too.large") {
@@ -51,6 +63,10 @@ const shutdown = async () => {
     disconnectPrisma(),
     disconnectEmployeePrisma(),
     disconnectBranchPrisma(),
+    disconnectServicePrisma(),
+    disconnectRoomPrisma(),
+    disconnectGuestPrisma(),
+    disconnectBookingPrisma(),
   ]);
   server.close(() => process.exit(0));
 };

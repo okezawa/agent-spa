@@ -14,6 +14,7 @@ export class AppComponent implements OnInit {
   private readonly router = inject(Router);
 
   isAuthenticated = false;
+  isSidebarOpen = true;
 
   ngOnInit(): void {
     this.refreshAuthState();
@@ -44,5 +45,13 @@ export class AppComponent implements OnInit {
         this.router.navigateByUrl('/login');
       }
     });
+  }
+
+  toggleSidebar(): void {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  closeSidebar(): void {
+    this.isSidebarOpen = false;
   }
 }
